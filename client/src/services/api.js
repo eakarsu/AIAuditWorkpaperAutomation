@@ -92,4 +92,25 @@ export const ai = {
   generateWorkpaper: (workpaper) => apiCall('/ai/generate-workpaper', { method: 'POST', body: JSON.stringify({ workpaper }) }),
   analyzeFinding: (finding) => apiCall('/ai/analyze-finding', { method: 'POST', body: JSON.stringify({ finding }) }),
   assessCompliance: (checklist) => apiCall('/ai/assess-compliance', { method: 'POST', body: JSON.stringify({ checklist }) }),
+
+  // Audit-driven advanced AI features
+  history: (params = {}) => apiCall(`/ai/history?${new URLSearchParams(params).toString()}`),
+  scoreEvidenceAdequacy: (evidence, audit_objective, save = false) =>
+    apiCall('/ai/score-evidence-adequacy', { method: 'POST', body: JSON.stringify({ evidence, audit_objective, save_to_evidence: save }) }),
+  getEvidenceScores: (filters = {}) => apiCall(`/ai/evidence-scores?${new URLSearchParams(filters).toString()}`),
+  getEvidenceScore: (evidenceId) => apiCall(`/ai/evidence-scores/${evidenceId}`),
+  getTemplates: () => apiCall('/ai/templates'),
+  generateFromTemplate: (template_id, context_data) =>
+    apiCall('/ai/generate-from-template', { method: 'POST', body: JSON.stringify({ template_id, context_data }) }),
+  classifyFindingSeverity: (finding) =>
+    apiCall('/ai/classify-finding-severity', { method: 'POST', body: JSON.stringify({ finding }) }),
+  crossAuditRiskLinker: (filters) =>
+    apiCall('/ai/cross-audit-risk-linker', { method: 'POST', body: JSON.stringify(filters) }),
+  complianceGapAnalyzer: (data) =>
+    apiCall('/ai/compliance-gap-analyzer', { method: 'POST', body: JSON.stringify(data) }),
+  evidenceChainValidator: (evidence_chain) =>
+    apiCall('/ai/evidence-chain-validator', { method: 'POST', body: JSON.stringify({ evidence_chain }) }),
+  materialityCalculator: (data) =>
+    apiCall('/ai/materiality-calculator', { method: 'POST', body: JSON.stringify(data) }),
+  riskHeatMap: () => apiCall('/ai/risk-heat-map'),
 };

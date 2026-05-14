@@ -12,6 +12,13 @@ function Sidebar({ user, onLogout }) {
     { path: '/workpapers', icon: 'fa-solid fa-file-lines', label: 'Workpapers', badge: null },
     { path: '/findings', icon: 'fa-solid fa-magnifying-glass-chart', label: 'Audit Findings', badge: null },
     { path: '/checklists', icon: 'fa-solid fa-clipboard-check', label: 'Compliance Checklists', badge: null },
+    { path: '/evidence-adequacy', icon: 'fa-solid fa-bullseye', label: 'Evidence Adequacy', section: 'ai' },
+    { path: '/materiality', icon: 'fa-solid fa-calculator', label: 'Materiality Calc', section: 'ai' },
+    { path: '/risk-heat-map', icon: 'fa-solid fa-fire', label: 'Risk Heat Map', section: 'ai' },
+    { path: '/workpaper-templates', icon: 'fa-solid fa-folder-tree', label: 'Workpaper Templates', section: 'ai' },
+    { path: '/advanced-ai-tools', icon: 'fa-solid fa-wand-magic-sparkles', label: 'Advanced AI Tools', section: 'ai' },
+    { path: '/extensions', icon: 'fa-solid fa-puzzle-piece', label: 'Extensions (GL/Risk/ERP)', section: 'ai' },
+    { path: '/ai-history', icon: 'fa-solid fa-clock-rotate-left', label: 'AI History', section: 'ai' },
     { path: '/audit-trail', icon: 'fa-solid fa-clock-rotate-left', label: 'Audit Trail', badge: null, section: 'tools' },
     { path: '/reports', icon: 'fa-solid fa-chart-bar', label: 'Reports & Analytics', badge: null, section: 'tools' },
     { path: '/users', icon: 'fa-solid fa-users-gear', label: 'User Management', badge: null, section: 'tools' },
@@ -45,6 +52,18 @@ function Sidebar({ user, onLogout }) {
 
         <div className="nav-section-title">Audit Modules</div>
         {navItems.filter(item => !item.section && item.path !== '/').map(item => (
+          <div
+            key={item.path}
+            className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
+            onClick={() => navigate(item.path)}
+          >
+            <i className={item.icon}></i>
+            {item.label}
+          </div>
+        ))}
+
+        <div className="nav-section-title">AI-Powered Tools</div>
+        {navItems.filter(item => item.section === 'ai').map(item => (
           <div
             key={item.path}
             className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}

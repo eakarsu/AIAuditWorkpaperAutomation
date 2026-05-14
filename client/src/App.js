@@ -11,6 +11,13 @@ import ChecklistsPage from './pages/ChecklistsPage';
 import AuditTrailPage from './pages/AuditTrailPage';
 import ReportsPage from './pages/ReportsPage';
 import UserManagementPage from './pages/UserManagementPage';
+import AIHistoryPage from './pages/AIHistoryPage';
+import EvidenceAdequacyPage from './pages/EvidenceAdequacyPage';
+import MaterialityCalculatorPage from './pages/MaterialityCalculatorPage';
+import RiskHeatMapPage from './pages/RiskHeatMapPage';
+import WorkpaperTemplatesPage from './pages/WorkpaperTemplatesPage';
+import AdvancedAIToolsPage from './pages/AdvancedAIToolsPage';
+import ExtensionsPage from './pages/ExtensionsPage'; // Apply pass 5
 import Sidebar from './components/Sidebar';
 
 function App() {
@@ -59,6 +66,13 @@ function App() {
             <Route path="/audit-trail" element={<AuditTrailPage />} />
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/users" element={<UserManagementPage />} />
+            <Route path="/ai-history" element={<AIHistoryPage />} />
+            <Route path="/evidence-adequacy" element={<EvidenceAdequacyPage />} />
+            <Route path="/materiality" element={<MaterialityCalculatorPage />} />
+            <Route path="/risk-heat-map" element={<RiskHeatMapPage />} />
+            <Route path="/workpaper-templates" element={<WorkpaperTemplatesPage />} />
+            <Route path="/advanced-ai-tools" element={<AdvancedAIToolsPage />} />
+            <Route path="/extensions" element={<ExtensionsPage />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </main>

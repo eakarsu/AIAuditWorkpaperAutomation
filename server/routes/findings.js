@@ -3,11 +3,58 @@ const router = express.Router();
 const pool = require('../db');
 const auth = require('../middleware/auth');
 
-// Get all findings
+// Get all findings — paginated when ?page/?paginated=true/?limit is supplied; raw array otherwise.
 router.get('/', auth, async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM audit_findings ORDER BY created_at DESC');
-    res.json(result.rows);
+    const wantsPagination = req.query.page !== undefined || req.query.paginated === 'true' || req.query.limit !== undefined;
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 25));
+    const offset = (page - 1) * limit;
+    const search = req.query.search || null;
+    const severity = req.query.severity || null;
+    const status = req.query.status || null;
+
+    const conds = [];
+    const params = [];
+    if (search) {
+      params.push(`%${search}%`);
+      conds.push(`(title ILIKE $${params.length} OR condition ILIKE $${params.length})`);
+    }
+    if (severity) {
+      params.push(severity);
+      conds.push(`severity = $${params.length}`);
+    }
+    if (status) {
+      params.push(status);
+      conds.push(`status = $${params.length}`);
+    }
+    const where = conds.length ? `WHERE ${conds.join(' AND ')}` : '';
+
+    if (!wantsPagination) {
+      const all = await pool.query(`SELECT * FROM audit_findings ${where} ORDER BY created_at DESC`, params);
+      return res.json(all.rows);
+    }
+
+    const cParams = [...params];
+    params.push(limit); const lp = `$${params.length}`;
+    params.push(offset); const op = `$${params.length}`;
+    const result = await pool.query(
+      `SELECT * FROM audit_findings ${where} ORDER BY created_at DESC LIMIT ${lp} OFFSET ${op}`,
+      params
+    );
+    const countResult = await pool.query(
+      `SELECT COUNT(*)::int AS total FROM audit_findings ${where}`,
+      cParams
+    );
+
+    res.json({
+      data: result.rows,
+      pagination: {
+        page, limit,
+        total: countResult.rows[0].total,
+        totalPages: Math.ceil(countResult.rows[0].total / limit)
+      }
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
