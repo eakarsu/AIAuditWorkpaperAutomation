@@ -54,6 +54,7 @@ app.use('/api/audit-trail', auditTrailRoutes);
 app.use('/api/reports', reportsRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/ext', extensionsRoutes); // Apply pass 5 — additive backlog
+app.use('/api/pbc-aging-risk', require('./routes/pbcAgingRisk'));
 
 // Health check
 app.get('/api/health', (req, res) => {

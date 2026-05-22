@@ -18,6 +18,7 @@ function Sidebar({ user, onLogout }) {
     { path: '/workpaper-templates', icon: 'fa-solid fa-folder-tree', label: 'Workpaper Templates', section: 'ai' },
     { path: '/advanced-ai-tools', icon: 'fa-solid fa-wand-magic-sparkles', label: 'Advanced AI Tools', section: 'ai' },
     { path: '/extensions', icon: 'fa-solid fa-puzzle-piece', label: 'Extensions (GL/Risk/ERP)', section: 'ai' },
+    { path: '/pbc-aging-risk', icon: 'fa-solid fa-hourglass-half', label: 'PBC Aging Risk', section: 'ai' },
     { path: '/ai-history', icon: 'fa-solid fa-clock-rotate-left', label: 'AI History', section: 'ai' },
     { path: '/audit-trail', icon: 'fa-solid fa-clock-rotate-left', label: 'Audit Trail', badge: null, section: 'tools' },
     { path: '/reports', icon: 'fa-solid fa-chart-bar', label: 'Reports & Analytics', badge: null, section: 'tools' },

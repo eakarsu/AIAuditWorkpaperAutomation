@@ -18,7 +18,11 @@ import RiskHeatMapPage from './pages/RiskHeatMapPage';
 import WorkpaperTemplatesPage from './pages/WorkpaperTemplatesPage';
 import AdvancedAIToolsPage from './pages/AdvancedAIToolsPage';
 import ExtensionsPage from './pages/ExtensionsPage'; // Apply pass 5
+import PbcAgingRiskPage from './pages/PbcAgingRiskPage';
 import Sidebar from './components/Sidebar';
+
+import CodexCustomVizFeature from './pages/CodexCustomVizFeature';
+import CodexOperationsFeature from './pages/CodexOperationsFeature';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -57,6 +61,9 @@ function App() {
         <Sidebar user={user} onLogout={handleLogout} />
         <main className="main-content">
           <Routes>
+        <Route path="/codex/custom-viz" element={<CodexCustomVizFeature />} />
+        <Route path="/codex/operations" element={<CodexOperationsFeature />} />
+
             <Route path="/" element={<Dashboard />} />
             <Route path="/evidence" element={<EvidencePage />} />
             <Route path="/sampling" element={<SamplingPage />} />
@@ -73,6 +80,7 @@ function App() {
             <Route path="/workpaper-templates" element={<WorkpaperTemplatesPage />} />
             <Route path="/advanced-ai-tools" element={<AdvancedAIToolsPage />} />
             <Route path="/extensions" element={<ExtensionsPage />} />
+            <Route path="/pbc-aging-risk" element={<PbcAgingRiskPage />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </main>
