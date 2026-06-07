@@ -20,6 +20,8 @@ import AdvancedAIToolsPage from './pages/AdvancedAIToolsPage';
 import ExtensionsPage from './pages/ExtensionsPage'; // Apply pass 5
 import PbcAgingRiskPage from './pages/PbcAgingRiskPage';
 import Sidebar from './components/Sidebar';
+import MissingFeaturesHub from './pages/MissingFeaturesHub';
+import ProductionReadiness from './pages/ProductionReadiness';
 
 import CodexCustomVizFeature from './pages/CodexCustomVizFeature';
 import CodexOperationsFeature from './pages/CodexOperationsFeature';
@@ -81,7 +83,9 @@ function App() {
             <Route path="/advanced-ai-tools" element={<AdvancedAIToolsPage />} />
             <Route path="/extensions" element={<ExtensionsPage />} />
             <Route path="/pbc-aging-risk" element={<PbcAgingRiskPage />} />
-            <Route path="*" element={<Navigate to="/" />} />
+        <Route path="/missing-features" element={<MissingFeaturesHub />} />
+        <Route path="/production-readiness" element={<ProductionReadiness />} />
+        <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </main>
       </div>
