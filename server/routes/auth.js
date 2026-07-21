@@ -23,7 +23,7 @@ router.post('/login', async (req, res) => {
 
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role, name: user.name },
-      process.env.JWT_SECRET || 'audit-workpaper-secret-key-2024',
+      process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
 
@@ -44,7 +44,7 @@ router.get('/me', async (req, res) => {
     const token = authHeader && authHeader.split(' ')[1];
     if (!token) return res.status(401).json({ error: 'Not authenticated' });
 
-    const verified = jwt.verify(token, process.env.JWT_SECRET || 'audit-workpaper-secret-key-2024');
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
     res.json({ user: verified });
   } catch (err) {
     res.status(403).json({ error: 'Invalid token' });
