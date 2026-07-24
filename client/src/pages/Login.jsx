@@ -21,9 +21,14 @@ function Login({ onLogin }) {
     }
   };
 
+  const demoPassword = import.meta.env.VITE_DEMO_PASSWORD || '';
+  const demoEnabled = import.meta.env.VITE_ENABLE_DEMO_CREDENTIAL_AUTOFILL === 'true'
+    && Boolean(demoPassword);
+
   const quickLogin = (userEmail) => {
+    if (!demoEnabled) return;
     setEmail(userEmail);
-    setPassword('password123');
+    setPassword(demoPassword);
   };
 
   return (
@@ -71,17 +76,17 @@ function Login({ onLogin }) {
 
         <div className="quick-login">
           <p>Quick Demo Access</p>
-          <button className="quick-login-btn" onClick={() => quickLogin('admin@auditpro.com')}>
+          <button className="quick-login-btn" onClick={() => quickLogin('admin@auditpro.com')} disabled={!demoEnabled}>
             <i className="fa-solid fa-user-shield"></i>
             Sarah Mitchell
             <span className="role-badge">Admin</span>
           </button>
-          <button className="quick-login-btn" onClick={() => quickLogin('john@auditpro.com')}>
+          <button className="quick-login-btn" onClick={() => quickLogin('john@auditpro.com')} disabled={!demoEnabled}>
             <i className="fa-solid fa-user-tie"></i>
             John Anderson
             <span className="role-badge">Senior Auditor</span>
           </button>
-          <button className="quick-login-btn" onClick={() => quickLogin('emily@auditpro.com')}>
+          <button className="quick-login-btn" onClick={() => quickLogin('emily@auditpro.com')} disabled={!demoEnabled}>
             <i className="fa-solid fa-user"></i>
             Emily Chen
             <span className="role-badge">Auditor</span>

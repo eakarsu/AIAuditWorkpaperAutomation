@@ -3,6 +3,7 @@
 const crypto = require('node:crypto');
 const { spawnSync } = require('node:child_process');
 const express = require('express');
+const jwt = require('jsonwebtoken');
 
 const databaseUrl = String(process.env.DATABASE_URL || '');
 const selectedEndpoint = String(process.env.RUNTIME_AI_ENDPOINT || '');
@@ -62,6 +63,10 @@ function verifyPassword(password, stored) {
 function actor(req) {
   const token = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
   if (!token) return null;
+  try {
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+    return { ...user, displayName: user.name || user.email };
+  } catch {}
   const row = query(
     'SELECT u.id,u.email,u.display_name,u.role FROM runtime_app_sessions s JOIN runtime_app_users u ON u.id=s.user_id WHERE s.token_hash=' +
       literal(sha(token)) + ' AND s.expires_at>NOW() AND u.active=TRUE LIMIT 1',

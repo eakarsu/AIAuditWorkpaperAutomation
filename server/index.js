@@ -14,6 +14,7 @@ const checklistRoutes = require('./routes/checklists');
 const auditTrailRoutes = require('./routes/audit-trail');
 const reportsRoutes = require('./routes/reports');
 const usersRoutes = require('./routes/users');
+const aiRoutes = require('./routes/ai');
 const auditLog = require('./middleware/audit-log');
 const { validateRuntime } = require('./config/runtime');
 validateRuntime();
@@ -39,6 +40,7 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
+app.use('/api/auth', authRoutes);
 app.use('/api', require('./runtimeAcceptance'));
 
 const clientBuild = path.join(__dirname, '../client/build');
@@ -47,7 +49,6 @@ const hasClientBuild = fs.existsSync(clientIndex);
 if (hasClientBuild) app.use(express.static(clientBuild));
 
 // API Routes
-app.use('/api/auth', authRoutes);
 app.use('/api', (req, res, next) => req.path === '/health' ? next() : require('./middleware/auth')(req, res, next));
 app.use('/api/evidence', auditLog('Evidence'), evidenceRoutes);
 app.use('/api/sampling', auditLog('Sampling'), samplingRoutes);
@@ -57,6 +58,7 @@ app.use('/api/checklists', auditLog('Checklists'), checklistRoutes);
 app.use('/api/audit-trail', auditTrailRoutes);
 app.use('/api/reports', reportsRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/ai', aiRoutes);
 app.use('/api/pbc-aging-risk', require('./routes/pbcAgingRisk'));
 app.use('/api/governed-workpapers', require('./routes/governedWorkpapers'));
 
