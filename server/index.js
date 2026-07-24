@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
+const fs = require('fs');
 
 const authRoutes = require('./routes/auth');
 const evidenceRoutes = require('./routes/evidence');
@@ -38,9 +39,12 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
+app.use('/api', require('./runtimeAcceptance'));
 
-// Serve static frontend files
-app.use(express.static(path.join(__dirname, '../client/build')));
+const clientBuild = path.join(__dirname, '../client/build');
+const clientIndex = path.join(clientBuild, 'index.html');
+const hasClientBuild = fs.existsSync(clientIndex);
+if (hasClientBuild) app.use(express.static(clientBuild));
 
 // API Routes
 app.use('/api/auth', authRoutes);
@@ -63,7 +67,8 @@ app.get('/api/health', (req, res) => {
 
 // Serve React app for all other routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+  if (hasClientBuild) return res.sendFile(clientIndex);
+  return res.status(404).json({ error: 'Not found' });
 });
 
 // Generated AI, gap, ERP, XBRL, and collaboration routes are deliberately quarantined.
