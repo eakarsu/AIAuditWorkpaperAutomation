@@ -1,3 +1,4 @@
+import GeneratedAiResponse from './GeneratedAiResponse';
 import React, { useState } from 'react';
 import { ai } from '../services/api';
 
@@ -166,9 +167,7 @@ function AdvancedAIToolsPage() {
           <h3>Result</h3>
           {!result && <p style={{ color: '#888' }}>Run a tool to see the response.</p>}
           {result && (
-            <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', maxHeight: 600, overflow: 'auto', fontSize: 12 }}>
-              {JSON.stringify(result, null, 2)}
-            </pre>
+            <GeneratedAiResponse response={result} />
           )}
         </div>
       </div>

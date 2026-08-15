@@ -61,6 +61,7 @@ app.use('/api/users', usersRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/pbc-aging-risk', require('./routes/pbcAgingRisk'));
 app.use('/api/governed-workpapers', require('./routes/governedWorkpapers'));
+app.use('/api', require('./routes/generatedFeatures').router);
 
 // Health check
 app.get('/api/health', (req, res) => {

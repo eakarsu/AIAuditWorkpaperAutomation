@@ -1,3 +1,4 @@
+import GeneratedAiResponse from './GeneratedAiResponse';
 // Apply pass 5 — additive UI for backlog features.
 // All endpoints under /api/ext (mounted in server/index.js).
 import React, { useEffect, useState } from 'react';
@@ -26,9 +27,7 @@ function Section({ title, children }) {
 function ResultBox({ data }) {
   if (data == null) return null;
   return (
-    <pre style={{ background: '#0b1020', color: '#cbd5e1', padding: 12, borderRadius: 6, overflow: 'auto', maxHeight: 320 }}>
-      {typeof data === 'string' ? data : JSON.stringify(data, null, 2)}
-    </pre>
+    <GeneratedAiResponse response={data} />
   );
 }
 
