@@ -78,8 +78,7 @@ function Login({ onLogin }) {
           <p>Quick Demo Access</p>
           <button className="quick-login-btn" onClick={() => quickLogin('admin@auditpro.com')} disabled={!demoEnabled}>
             <i className="fa-solid fa-user-shield"></i>
-            Sarah Mitchell
-            <span className="role-badge">Admin</span>
+            Auto Fill Demo Credentials
           </button>
           <button className="quick-login-btn" onClick={() => quickLogin('john@auditpro.com')} disabled={!demoEnabled}>
             <i className="fa-solid fa-user-tie"></i>
