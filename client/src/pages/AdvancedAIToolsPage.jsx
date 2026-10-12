@@ -1,6 +1,30 @@
 import GeneratedAiResponse from './GeneratedAiResponse';
 import React, { useState } from 'react';
 import { ai } from '../services/api';
+import FullFieldPresets from '../components/FullFieldPresets';
+
+const EXAMPLES = {
+  classifier: [
+    { title: 'Unreviewed bank reconciliations', condition: 'Three monthly reconciliations lacked reviewer signoff; one $82,000 reconciling item remained open.', criteria: 'Monthly independent review with timely resolution of reconciling items.', cause: 'Reviewer ownership was not assigned during staff turnover.', effect: 'Cash misstatements may go undetected.', severity: 'High' },
+    { title: 'Late user access removal', condition: 'Two departed staff retained read access for 14 days after departure.', criteria: 'Access removed within one business day of termination.', cause: 'HR and IT notifications were manual.', effect: 'Unauthorized access to financial records was possible.', severity: 'Medium' },
+    { title: 'Unsupported journal entries', condition: 'Five year-end manual entries totaling $1.4 million had no supporting approval.', criteria: 'Material manual entries require support and independent approval.', cause: 'Emergency close procedures bypassed the approval queue.', effect: 'Revenue and expense balances could be materially misstated.', severity: 'Critical' },
+  ],
+  linker: [
+    { industry: 'Manufacturing', audit_area: 'Inventory', lookback_days: 365 },
+    { industry: 'Healthcare', audit_area: 'Revenue', lookback_days: 730 },
+    { industry: 'Retail', audit_area: 'Cash', lookback_days: 180 },
+  ],
+  gap: [
+    { framework: 'SOX', target_assertion: 'Completeness of revenue', current_controls: 'Monthly revenue reconciliation reviewed by controller\nQuarterly access review for billing users' },
+    { framework: 'SOC2', target_assertion: 'Logical access', current_controls: 'New user requests require manager approval\nQuarterly privileged access recertification' },
+    { framework: 'COSO', target_assertion: 'Monitoring activities', current_controls: 'Audit committee reviews quarterly exception trends\nControl owners document remediation status monthly' },
+  ],
+  chain: [
+    { chainJson: JSON.stringify([{ title: 'Bank statement', source: 'Bank portal', evidence_type: 'Document', collected_by: 'Audit team', timestamp: '2026-01-15' }], null, 2) },
+    { chainJson: JSON.stringify([{ title: 'Inventory count sheet', source: 'Warehouse count', evidence_type: 'Observation', collected_by: 'Audit team', timestamp: '2026-01-20' }], null, 2) },
+    { chainJson: JSON.stringify([{ title: 'Invoice sample', source: 'Accounts payable export', evidence_type: 'Document', collected_by: 'Audit team', timestamp: '2026-02-01' }], null, 2) },
+  ],
+};
 
 /**
  * Advanced AI Tools — exposes 4 audit-driven features:
@@ -95,6 +119,10 @@ function AdvancedAIToolsPage() {
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
         <div style={{ border: '1px solid #e5e7eb', borderRadius: 8, padding: 16 }}>
+          {tab === 'classifier' && <FullFieldPresets value={findingForm} presets={EXAMPLES.classifier.map((values, i) => ({ label: ['Cash review', 'Access removal', 'Journal entries'][i], values }))} onChange={setFindingForm} />}
+          {tab === 'linker' && <FullFieldPresets value={linkerForm} presets={EXAMPLES.linker.map((values, i) => ({ label: ['Inventory', 'Revenue', 'Cash'][i], values }))} onChange={setLinkerForm} />}
+          {tab === 'gap' && <FullFieldPresets value={gapForm} presets={EXAMPLES.gap.map((values, i) => ({ label: ['SOX revenue', 'SOC 2 access', 'COSO monitoring'][i], values }))} onChange={setGapForm} />}
+          {tab === 'chain' && <FullFieldPresets value={chainForm} presets={EXAMPLES.chain.map((values, i) => ({ label: ['Bank evidence', 'Inventory evidence', 'Invoice evidence'][i], values }))} onChange={setChainForm} />}
           {tab === 'classifier' && (
             <>
               <h3>Classify Finding Severity</h3>

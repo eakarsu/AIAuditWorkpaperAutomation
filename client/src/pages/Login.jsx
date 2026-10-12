@@ -31,6 +31,14 @@ function Login({ onLogin }) {
     setPassword(demoPassword);
   };
 
+  const demoLogin = async () => {
+    setError('');
+    setLoading(true);
+    try { onLogin(await auth.demoLogin()); }
+    catch (err) { setError(err.message || 'Demo login is unavailable'); }
+    finally { setLoading(false); }
+  };
+
   return (
     <div className="login-page">
       <div className="login-container">
@@ -76,9 +84,9 @@ function Login({ onLogin }) {
 
         <div className="quick-login">
           <p>Quick Demo Access</p>
-          <button className="quick-login-btn" onClick={() => quickLogin('admin@auditpro.com')} disabled={!demoEnabled}>
+          <button type="button" className="quick-login-btn" onClick={demoLogin} disabled={loading}>
             <i className="fa-solid fa-user-shield"></i>
-            Auto Fill Demo Credentials
+            Log In as Demo
           </button>
           <button className="quick-login-btn" onClick={() => quickLogin('john@auditpro.com')} disabled={!demoEnabled}>
             <i className="fa-solid fa-user-tie"></i>
@@ -90,6 +98,7 @@ function Login({ onLogin }) {
             Emily Chen
             <span className="role-badge">Auditor</span>
           </button>
+          {!demoEnabled && <p role="status">Credential autofill is unavailable in this client build. Demo login uses the existing server configured account, when available.</p>}
         </div>
       </div>
     </div>

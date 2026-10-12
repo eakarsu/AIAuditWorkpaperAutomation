@@ -2,6 +2,7 @@ import GeneratedAiResponse from './GeneratedAiResponse';
 // Apply pass 5 — additive UI for backlog features.
 // All endpoints under /api/ext (mounted in server/index.js).
 import React, { useEffect, useState } from 'react';
+import FullFieldPresets from '../components/FullFieldPresets';
 
 const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:4001/api';
 function authHeaders() {
@@ -87,6 +88,11 @@ function GLPanel() {
   }
   return (
     <Section title="GL Anomaly Analysis">
+      <FullFieldPresets value={{ text }} presets={[
+        { label: 'Travel expense', values: { text: JSON.stringify([{ entry_date: '2026-04-30', account_code: '6000', account_name: 'Travel', debit: 10000, credit: 0, memo: 'Illustrative round-dollar expense' }], null, 2) } },
+        { label: 'Revenue cutoff', values: { text: JSON.stringify([{ entry_date: '2026-12-31', account_code: '4000', account_name: 'Revenue', debit: 0, credit: 85000, memo: 'Illustrative year-end entry; confirm shipment support' }], null, 2) } },
+        { label: 'Manual adjustment', values: { text: JSON.stringify([{ entry_date: '2026-06-30', account_code: '5100', account_name: 'Cost of sales', debit: 42000, credit: 0, memo: 'Illustrative manual adjustment; obtain approval' }], null, 2) } },
+      ]} onChange={next => setText(next.text)} />
       <textarea value={text} onChange={e => setText(e.target.value)} rows={6} style={{ width: '100%', fontFamily: 'monospace' }} />
       <div style={{ marginTop: 8 }}>
         <button onClick={ingest}>Ingest entries</button>{' '}
@@ -113,6 +119,11 @@ function RiskPanel() {
   }
   return (
     <Section title="AI Inherent + Control Risk Assessment">
+      <FullFieldPresets value={{ eng, inh, ctrl }} presets={[
+        { label: 'Manufacturing', values: { eng: 'Example manufacturing audit', inh: '{"industry":"manufacturing","inventory_complexity":"high","new_systems":true}', ctrl: '{"inventory_reconciliation":"monthly","access_review":"quarterly"}' } },
+        { label: 'Healthcare', values: { eng: 'Example healthcare audit', inh: '{"industry":"healthcare","revenue_complexity":"high","regulatory_change":true}', ctrl: '{"billing_review":"monthly","segregation_of_duties":"documented"}' } },
+        { label: 'Retail', values: { eng: 'Example retail audit', inh: '{"industry":"retail","cash_volume":"high","multi_location":true}', ctrl: '{"cash_reconciliation":"daily","exception_review":"weekly"}' } },
+      ]} onChange={next => { setEng(next.eng); setInh(next.inh); setCtrl(next.ctrl); }} />
       <input value={eng} onChange={e => setEng(e.target.value)} placeholder="engagement" style={{ width: '100%', marginBottom: 8 }} />
       <textarea value={inh} onChange={e => setInh(e.target.value)} rows={3} style={{ width: '100%', fontFamily: 'monospace', marginBottom: 8 }} />
       <textarea value={ctrl} onChange={e => setCtrl(e.target.value)} rows={3} style={{ width: '100%', fontFamily: 'monospace' }} />
@@ -181,6 +192,11 @@ function ContPanel() {
   useEffect(() => { load(); }, []);
   return (
     <Section title="Continuous Audit Events">
+      <FullFieldPresets value={{ src, type, sev }} presets={[
+        { label: 'Reconciliation', values: { src: 'GL_FEED', type: 'reconciliation_exception', sev: 'warn' } },
+        { label: 'Access review', values: { src: 'ACCESS_LOG', type: 'overdue_access_review', sev: 'high' } },
+        { label: 'Journal review', values: { src: 'JOURNAL_LOG', type: 'unapproved_manual_entry', sev: 'critical' } },
+      ]} onChange={next => { setSrc(next.src); setType(next.type); setSev(next.sev); }} />
       <input value={src} onChange={e => setSrc(e.target.value)} placeholder="source" />{' '}
       <input value={type} onChange={e => setType(e.target.value)} placeholder="event_type" />{' '}
       <input value={sev} onChange={e => setSev(e.target.value)} placeholder="severity" />{' '}

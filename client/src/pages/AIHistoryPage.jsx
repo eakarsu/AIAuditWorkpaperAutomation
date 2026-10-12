@@ -1,3 +1,4 @@
+import FormattedAIReport from "../components/FormattedAIReport";
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -129,7 +130,7 @@ function AIHistoryPage() {
               </div>
               <div className="form-group">
                 <label>Output</label>
-                <pre style={{ background: 'rgba(15,23,42,0.7)', padding: 12, borderRadius: 6, fontSize: 12, color: '#cbd5e1', overflow: 'auto', maxHeight: 400 }}>{JSON.stringify(selected.result_data, null, 2)}</pre>
+                <FormattedAIReport response={selected.result_data} />
               </div>
             </div>
           </div>

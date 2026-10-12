@@ -207,7 +207,8 @@ function Confidence({ value }) {
 }
 
 function Primitive({ value }) {
-  if (value == null || value === '') return <span style={{ color: '#64748b' }}>Not provided</span>;
+  if (value == null) return <span style={{ color: '#64748b' }}>Not provided</span>;
+  if (value === '') return <span style={{ color: '#64748b' }}>(empty string)</span>;
   if (typeof value === 'boolean') return <span style={{ color: value ? '#047857' : '#b45309', fontWeight: 700 }}>{value ? 'Yes' : 'No'}</span>;
   return <Narrative text={String(value)} />;
 }
@@ -224,7 +225,7 @@ function ItemCard({ item, index, depth }) {
   }
 
   const headlineKey = ['finding', 'title', 'action', 'recommendation', 'risk', 'name', 'description'].find((key) => parsed[key]);
-  const severity = parsed.severity || parsed.priority || parsed.risk_level;
+  const severity = parsed.severity ?? parsed.priority ?? parsed.risk_level;
   const details = Object.entries(parsed).filter(([key]) => key !== headlineKey && !['severity', 'priority', 'risk_level'].includes(key));
   return (
     <article style={{ padding: 14, border: '1px solid #e2e8f0', borderRadius: 12, background: '#fff' }}>
@@ -232,7 +233,7 @@ function ItemCard({ item, index, depth }) {
         <span style={{ flex: '0 0 26px', height: 26, borderRadius: 999, background: '#dbeafe', color: '#1d4ed8', display: 'grid', placeItems: 'center', fontSize: 12, fontWeight: 900 }}>{index + 1}</span>
         <div style={{ flex: 1, minWidth: 0 }}>
           {headlineKey ? <div style={{ color: '#0f172a', fontWeight: 800, lineHeight: 1.5 }}>{stripMarkdown(parsed[headlineKey])}</div> : null}
-          {severity ? <span style={{ display: 'inline-block', marginTop: 7, padding: '3px 8px', borderRadius: 999, background: '#fff7ed', color: '#c2410c', fontSize: 11, fontWeight: 900, textTransform: 'uppercase' }}>{severity}</span> : null}
+          {severity !== undefined && severity !== null ? <span style={{ display: 'inline-block', marginTop: 7, padding: '3px 8px', borderRadius: 999, background: '#fff7ed', color: '#c2410c', fontSize: 11, fontWeight: 900, textTransform: 'uppercase' }}>{String(severity)}</span> : null}
         </div>
       </div>
       {details.length ? <div style={{ display: 'grid', gap: 9, marginTop: 12, paddingLeft: 36 }}>{details.map(([key, value]) => <div key={key}><div style={{ color: '#64748b', fontSize: 11, fontWeight: 900, textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 3 }}>{displayLabel(key)}</div><StructuredValue value={value} depth={depth + 1} /></div>)}</div> : null}
@@ -246,6 +247,10 @@ function StructuredValue({ value, depth = 0, fieldKey = '' }) {
   if (parsed == null || ['string', 'number', 'boolean'].includes(typeof parsed)) return <Primitive value={parsed} />;
   if (Array.isArray(parsed)) {
     if (!parsed.length) return <span style={{ color: '#64748b' }}>No items reported</span>;
+    if (parsed.every(item => item && typeof item === 'object' && !Array.isArray(item))) {
+      const keys = [...new Set(parsed.flatMap(item => Object.keys(item)))];
+      return <div style={{ overflowX: 'auto' }}><table style={{ width: '100%', borderCollapse: 'collapse' }}><thead><tr>{keys.map(key => <th key={key} style={{ padding: 8, textAlign: 'left', borderBottom: '1px solid #cbd5e1' }}>{displayLabel(key)}</th>)}</tr></thead><tbody>{parsed.map((item, index) => <tr key={index}>{keys.map(key => <td key={key} style={{ padding: 8, verticalAlign: 'top', borderBottom: '1px solid #e2e8f0' }}><StructuredValue value={item[key]} depth={depth + 1} /></td>)}</tr>)}</tbody></table></div>;
+    }
     return <div style={{ display: 'grid', gap: 10 }}>{parsed.map((item, index) => <ItemCard key={index} item={item} index={index} depth={depth} />)}</div>;
   }
 
@@ -287,7 +292,7 @@ function toPlainText(value, depth = 0) {
 export default function GeneratedAiResponse({ response }) {
   const [copied, setCopied] = useState(false);
   const parsed = useMemo(() => parseAiValue(response), [response]);
-  if (!parsed) return null;
+  if (parsed === null || parsed === undefined) return null;
 
   const payload = typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : { result: parsed };
   const content = unwrapContent(payload);

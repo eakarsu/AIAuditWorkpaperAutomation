@@ -4,10 +4,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const pool = require('../db');
 
-// Login
-router.post('/login', async (req, res) => {
+async function authenticate(email, password, res) {
   try {
-    const { email, password } = req.body;
     const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
 
     if (result.rows.length === 0) {
@@ -35,6 +33,15 @@ router.post('/login', async (req, res) => {
     console.error('Login error:', err);
     res.status(500).json({ error: 'Server error' });
   }
+}
+
+router.post('/login', (req, res) => authenticate(req.body.email, req.body.password, res));
+
+// The demo account must already exist. Credentials stay on the server.
+router.post('/demo-login', (req, res) => {
+  const { DEMO_EMAIL, DEMO_PASSWORD } = process.env;
+  if (!DEMO_EMAIL || !DEMO_PASSWORD) return res.status(503).json({ error: 'Demo login is not configured' });
+  return authenticate(DEMO_EMAIL, DEMO_PASSWORD, res);
 });
 
 // Get current user

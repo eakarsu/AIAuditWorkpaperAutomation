@@ -24,13 +24,21 @@ async function apiCall(endpoint, options = {}) {
   return data;
 }
 
+// Record routes may return a raw array or a paginated envelope.
+export function recordRows(payload) {
+  if (Array.isArray(payload)) return payload;
+  if (payload && Array.isArray(payload.data)) return payload.data;
+  throw new Error('Record list response did not contain an array');
+}
+
 export const auth = {
   login: (email, password) => apiCall('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
+  demoLogin: () => apiCall('/auth/demo-login', { method: 'POST' }),
   me: () => apiCall('/auth/me'),
 };
 
 export const evidence = {
-  getAll: () => apiCall('/evidence'),
+  getAll: () => apiCall('/evidence').then(recordRows),
   getOne: (id) => apiCall(`/evidence/${id}`),
   create: (data) => apiCall('/evidence', { method: 'POST', body: JSON.stringify(data) }),
   update: (id, data) => apiCall(`/evidence/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
@@ -38,7 +46,7 @@ export const evidence = {
 };
 
 export const sampling = {
-  getAll: () => apiCall('/sampling'),
+  getAll: () => apiCall('/sampling').then(recordRows),
   getOne: (id) => apiCall(`/sampling/${id}`),
   create: (data) => apiCall('/sampling', { method: 'POST', body: JSON.stringify(data) }),
   update: (id, data) => apiCall(`/sampling/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
@@ -46,7 +54,7 @@ export const sampling = {
 };
 
 export const workpapers = {
-  getAll: () => apiCall('/workpapers'),
+  getAll: () => apiCall('/workpapers').then(recordRows),
   getOne: (id) => apiCall(`/workpapers/${id}`),
   create: (data) => apiCall('/workpapers', { method: 'POST', body: JSON.stringify(data) }),
   update: (id, data) => apiCall(`/workpapers/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
@@ -54,7 +62,7 @@ export const workpapers = {
 };
 
 export const findings = {
-  getAll: () => apiCall('/findings'),
+  getAll: () => apiCall('/findings').then(recordRows),
   getOne: (id) => apiCall(`/findings/${id}`),
   create: (data) => apiCall('/findings', { method: 'POST', body: JSON.stringify(data) }),
   update: (id, data) => apiCall(`/findings/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
@@ -62,7 +70,7 @@ export const findings = {
 };
 
 export const checklists = {
-  getAll: () => apiCall('/checklists'),
+  getAll: () => apiCall('/checklists').then(recordRows),
   getOne: (id) => apiCall(`/checklists/${id}`),
   create: (data) => apiCall('/checklists', { method: 'POST', body: JSON.stringify(data) }),
   update: (id, data) => apiCall(`/checklists/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
@@ -70,7 +78,7 @@ export const checklists = {
 };
 
 export const users = {
-  getAll: () => apiCall('/users'),
+  getAll: () => apiCall('/users').then(recordRows),
   create: (data) => apiCall('/users', { method: 'POST', body: JSON.stringify(data) }),
   update: (id, data) => apiCall(`/users/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   delete: (id) => apiCall(`/users/${id}`, { method: 'DELETE' }),

@@ -1,3 +1,4 @@
+import AIReportLibrary from "./AIReportLibrary";
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -101,7 +102,7 @@ function Sidebar({ user, onLogout }) {
           Sign Out
         </button>
       </div>
-    </div>
+    <AIReportLibrary /></div>
   );
 }
 

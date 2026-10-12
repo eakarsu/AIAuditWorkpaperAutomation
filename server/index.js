@@ -41,7 +41,9 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '10mb' }));
 app.use('/api/auth', authRoutes);
-app.use('/api', require('./runtimeAcceptance'));
+// Runtime acceptance is an optional harness: only mount it when an endpoint is configured.
+// Requiring it unconditionally crashes the whole server when RUNTIME_AI_ENDPOINT is unset.
+if (process.env.RUNTIME_AI_ENDPOINT) app.use('/api', require('./runtimeAcceptance'));
 
 const clientBuild = path.join(__dirname, '../client/build');
 const clientIndex = path.join(clientBuild, 'index.html');
@@ -76,6 +78,14 @@ app.get('*', (req, res) => {
 
 // Generated AI, gap, ERP, XBRL, and collaboration routes are deliberately quarantined.
 
+
+// Advisory AI reports only; native execution and approval routes stay unchanged.
+const aiWorkspaceSupport = require("./aiWorkspaceAdapters.cjs");
+const aiWorkspaceDatabase = require("./db.js");
+app.use('/api/report-workspace', require("./aiWorkspace.cjs").createAIWorkspaceRouter({
+  pool: aiWorkspaceDatabase, authenticateToken: aiWorkspaceSupport.runtimeSessionAuth(aiWorkspaceDatabase, require("./middleware/auth.js")),
+  aiRateLimiter: aiWorkspaceSupport.createWorkspaceLimiter(), features: require("./aiWorkspaceFeatures.json"),
+}));
 app.listen(PORT, () => {
   console.log(`Audit Workpaper API running on port ${PORT}`);
 });

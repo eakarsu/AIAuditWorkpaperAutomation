@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AIResponse from '../components/AIResponse';
+import FullFieldPresets from '../components/FullFieldPresets';
 
 const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:4001/api';
 
@@ -118,6 +119,11 @@ function WorkpaperTemplatesPage() {
                 <div className="detail-item full-width"><label>Description</label><div className="value">{selected.description}</div></div>
               </div>
               <div className="form-group" style={{ marginTop: 16 }}>
+                <FullFieldPresets value={{ context_data: contextData }} presets={[
+                  { label: 'Revenue testing', values: { context_data: 'Example engagement: a regional manufacturer with a December 31 year-end. Revenue includes wholesale shipments and returns. Plan procedures for cutoff, occurrence, and review of credit memos; confirm the actual ledger and materiality before use.' } },
+                  { label: 'Inventory count', values: { context_data: 'Example engagement: a distributor with two warehouses and a December 31 count. Consider count attendance, obsolete stock, and reconciliation to the inventory ledger. Confirm actual locations, quantities, and count instructions before use.' } },
+                  { label: 'Cash reconciliation', values: { context_data: 'Example engagement: a service company with three operating bank accounts. Plan bank confirmation and reconciliation testing for year-end. Confirm actual bank records and outstanding items before use.' } },
+                ]} onChange={next => setContextData(next.context_data)} />
                 <label>Context Data (engagement-specific details)</label>
                 <textarea
                   rows={4}
