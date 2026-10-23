@@ -21,6 +21,7 @@ function Login({ onLogin }) {
     }
   };
 
+  const demoEmail = import.meta.env.VITE_DEMO_EMAIL || '';
   const demoPassword = import.meta.env.VITE_DEMO_PASSWORD || '';
   const demoEnabled = import.meta.env.VITE_ENABLE_DEMO_CREDENTIAL_AUTOFILL === 'true'
     && Boolean(demoPassword);
@@ -29,6 +30,16 @@ function Login({ onLogin }) {
     if (!demoEnabled) return;
     setEmail(userEmail);
     setPassword(demoPassword);
+  };
+
+  const fillDemoCredentials = async () => {
+    if (demoEmail && demoPassword) { setEmail(demoEmail); setPassword(demoPassword); setError(''); return; }
+    try {
+      const res = await fetch('/api/auth/demo-credentials', { cache: 'no-store' });
+      const data = await res.json().catch(() => null);
+      if (res.ok && data?.email && data?.password) { setEmail(data.email); setPassword(data.password); setError(''); return; }
+    } catch {}
+    setError('Demo credentials are not configured for this environment.');
   };
 
   const demoLogin = async () => {
@@ -84,6 +95,9 @@ function Login({ onLogin }) {
 
         <div className="quick-login">
           <p>Quick Demo Access</p>
+          <button type="button" className="quick-login-btn" aria-label="Fill demo credentials" onClick={fillDemoCredentials}>
+            Fill demo credentials
+          </button>
           <button type="button" className="quick-login-btn" onClick={demoLogin} disabled={loading}>
             <i className="fa-solid fa-user-shield"></i>
             Log In as Demo
